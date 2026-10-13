@@ -1,0 +1,45 @@
+{
+  "id": "offlineDemoSummarizeV1",
+  "name": "Summarize via LiteLLM general",
+  "nodes": [
+    {
+      "parameters": {"httpMethod": "POST", "path": "summarize-demo", "responseMode": "responseNode", "options": {}},
+      "id": "11111111-1111-4111-8111-111111111111",
+      "name": "Local Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [220, 300],
+      "webhookId": "summarize-demo"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:4000/v1/chat/completions",
+        "sendHeaders": true,
+        "headerParameters": {"parameters": [{"name": "Authorization", "value": "=Bearer {{ $env.LITELLM_API_KEY }}"}]},
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({model: 'general', messages: [{role: 'system', content: 'You write faithful, concise summaries. Return only one sentence of at most 20 words. Do not invent facts or add commentary.'}, {role: 'user', content: 'Summarize this passage: ' + String($json.body?.text || '').slice(0, 1200)}], max_tokens: 80, think: false}) }}",
+        "options": {"timeout": 180000}
+      },
+      "id": "22222222-2222-4222-8222-222222222222",
+      "name": "LiteLLM general",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {"respondWith": "json", "responseBody": "={{ JSON.stringify({summary: $json.choices?.[0]?.message?.content || ''}) }}", "options": {}},
+      "id": "33333333-3333-4333-8333-333333333333",
+      "name": "Reply with summary",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [690, 300]
+    }
+  ],
+  "connections": {"Local Webhook": {"main": [[{"node": "LiteLLM general", "type": "main", "index": 0}]]}, "LiteLLM general": {"main": [[{"node": "Reply with summary", "type": "main", "index": 0}]]}},
+  "settings": {"executionOrder": "v1"},
+  "active": false,
+  "pinData": {},
+  "tags": []
+}

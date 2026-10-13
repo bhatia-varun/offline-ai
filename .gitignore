@@ -1,0 +1,38 @@
+.env
+.env.*
+!.env.example
+.venv*/
+__pycache__/
+*.py[cod]
+.DS_Store
+logs/
+.pytest_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+build/
+dist/
+*.egg-info/
+n8n/data/
+open-webui/data/
+backups/
+n8n/*.db
+audio/tmp/
+audio/models/
+audio/samples/
+# Local upstream checkout; this repository tracks its own launchers/workflows.
+image/comfyui/
+# Keep platform-specific Python environments and large model weights local.
+image/venv/
+image/models/
+# Local inputs, generated images, and ComfyUI runtime state are not source files.
+image/output/
+image/input/
+image/temp/
+image/logs/
+image/user/
+# The portable API-format workflow is project source and should be committed.
+!image/workflow-api.json
+rag/chroma/*
+!rag/chroma/.gitkeep
+rag/chroma-windows/
